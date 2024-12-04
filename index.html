@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Profile Viewer</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        html{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        .container{
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container h1{
+            margin-bottom: 10px;
+        }
+        .container input{
+            padding: 5px;
+        }
+        .container button{
+            padding: 5px;
+        }
+        #profile{
+            margin-top: 10px;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+    <div>
+      <h1>Github Profile Viewer</h1>
+      <input id="userName" type="text" placeholder="Enter Username" />
+      <button onclick="fetchProfile()">Get Profile</button>
+      <div id="profile">
+      </div>
+      </div>
+    </div>
+    <script>
+      function fetchProfile() {
+        const userName = document.getElementById("userName").value;
+        if (!userName) {
+          alert("Enter Github profile Username");
+        } else {
+          fetch(`https://api.github.com/users/${userName}`)
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error("Network reponse is not ok");
+              }
+              return response.json();
+            })
+            .then(data=>{
+                displayData(data);
+            })
+            .catch((err) => {
+              console.error(
+                "There was a problem with the fetch operation",
+                err
+              );
+            });
+
+          function displayData(data) {
+            const profile = document.getElementById("profile");
+            profile.innerHTML = `<h2>${data.login}</h2>
+                        <img src="${data.avatar_url}" style="width:100px; height:100px; border-radius:50%">
+                        <p>Name: ${data.name || 'N/A'}</p>
+                        <p>Bio: ${data.bio || 'N/A'}</p>
+                        <p>Location: ${data.location || 'N/A'}</p>
+                        <p>Followers: ${data.followers || 'N/A'}</p>
+                        <p>Public Repos: ${data.public_repos}</p>
+                        <a href="${data.html_url}" target="_black">View Profile on GitHub</a>
+                    `;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
